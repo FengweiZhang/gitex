@@ -35,7 +35,7 @@ def get_prime (N):
     return ans
 
 
-def bezour(a,b):
+def bezout(a,b):
     s2 = 0
     s1 = 1
     t2 = 1

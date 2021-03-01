@@ -50,3 +50,15 @@ def bezout(a,b):
         q = int(r1 / r2)
         r2,r1 = -q * r2 + r1 , r2
     return (s2,t2)
+
+# 求多个整数的gcd gcd_n(12,32,45,64)
+def gcd_n(*a):
+    if len(a) == 2:
+        return gcd(a[0],a[1])
+    else:
+        d = gcd(a[0],a[1])
+        for i in range(2,len(a)):
+            d = gcd(d,a[i])
+            if d == 1:
+                return d
+        return d

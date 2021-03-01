@@ -1,4 +1,8 @@
+# import math
+
 def gcd(a,b):
+    a = abs(a)
+    b = abs(b)
     if b == 0:
         return a  
     else :
@@ -29,3 +33,20 @@ def get_prime (N):
                 i += 1
     ans = list(filter(lambda x:a[x],indices))
     return ans
+
+
+def bezour(a,b):
+    s2 = 0
+    s1 = 1
+    t2 = 1
+    t1 = 0
+    q = int(a / b)
+    r2 = a % b
+    r1 = b
+
+    while r2 != 0:
+        s2,s1 = -q * s2 + s1 , s2
+        t2,t1 = -q * t2 + t1 , t2
+        q = int(r1 / r2)
+        r2,r1 = -q * r2 + r1 , r2
+    return (s2,t2)

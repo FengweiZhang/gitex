@@ -1,6 +1,6 @@
 # import math
 import numpy as np 
-
+import random 
 
 
 # =====================================================================================
@@ -25,7 +25,6 @@ def shape_trans_conv(h,h_k,stride,padding,out_padding=0):
     )
 
 
-
 def draw_table(m,mode):
     """
     mode = 'add' or 'mul'
@@ -44,8 +43,6 @@ def draw_table(m,mode):
     ans = pd.DataFrame(sheet)
     ans.to_excel(f'm={m}_mode={mode}.xlsx')
 
-
-
 class PixelNorm(nn.Module):
     def __init__(self):
         super(PixelNorm,self).__init__()
@@ -53,9 +50,6 @@ class PixelNorm(nn.Module):
     def forward(self,X):
         tmp = X * X
         return X / torch.sqrt(tmp.sum(dim=1,keepdim=True))
-
-
-
 
 class Maxout(nn.Module):
     def __init__(self,num_in,num_out,pieces):
@@ -202,25 +196,39 @@ def calc(a,m):
     pass
 
 
-def mod_exp(b,n,m):
+# def mod_exp(b,n,m):
+#     '''
+#     calc b^n % m
+#     '''
+#     b1 = b
+#     n1 = n
+#     m1 = m
+
+#     n = bin(n)
+#     n = n[2:]
+#     n = n[::-1]
+
+#     a = 1
+#     for item in n:
+#         a = (a * (b **int(item))) % m
+#         b = b**2
+#     return a
+#     pass
+
+def m2m(m,e,b):
     '''
-    calc b^n % m
+    return m^e % b
     '''
-    b1 = b
-    n1 = n
-    m1 = m
-
-    n = bin(n)
-    n = n[2:]
-    n = n[::-1]
-
-    a = 1
-    for item in n:
-        a = (a * (b **int(item))) % m
-        b = b**2
-    return a
-    pass
-
+    result=1
+    m1=m
+    while(e>=1):
+        e1=e%2
+        if(e1==1):
+            result=(m1*result)%b
+        m1=(m1**2)%b
+        e=e//2
+    # print(int(result))
+    return int(result)
 
 class RSA():
     def __init__(self,p=19260817,q=19260817):
@@ -228,19 +236,19 @@ class RSA():
         self.q = q
         self.n = p * q
         self.phi = (self.p -1) * (self.q -1)
-        self.e = np.random.randint(2,self.phi)
+        self.e = random.randint(2,self.phi)
         while gcd(self.e,self.phi) != 1:
-            self.e = np.random.randint(1,self.phi)
+            self.e = random.randint(2,self.phi)
         self.d = get_inverse(self.e,self.phi)
         # print(self.p,self.q,self.e)
     
     def lock(self,m):
         # c = m ** self.e % self.n
-        c = mod_exp(m,self.e,self.n)
+        c = m2m(m,self.e,self.n)
         return c
 
     def unlock(self,c):
-        m = mod_exp(c,self.d,self.n)
+        m = m2m(c,self.d,self.n)
         return m
 
 
@@ -253,13 +261,24 @@ if __name__ == '__main__':
     # print(get_prime(17))
     # print(euler(18)
     m = 121
+    p = 6133
+    q = 6143
     print(f'm is {m}')
 
-    r = RSA(31,17)
+    r = RSA(p,q)
     c = r.lock(m)
     print(f'c is {c}')
     m = r.unlock(c)
     print(f'm is {m}')
+    # p = 6133
+    # q = 6143
+    # n = p * q
+    # print(bin(n))
+    # c = 10697729
+    # mod_exp()
+
+
+
     # print(mod_exp(468,237,667))
     # m = [9,11,101]
     # b = [1,1,1]

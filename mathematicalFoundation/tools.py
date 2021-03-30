@@ -241,13 +241,51 @@ class RSA():
             self.e = random.randint(2,self.phi)
         self.d = get_inverse(self.e,self.phi)
         # print(self.p,self.q,self.e)
+        # self.char_set = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 'abcdefghijklmnopqrstuvwxyz' + ' ' + '0123456789'
+        self.char_to_index = {}
+        self.index_to_char = {}
+        self.set_char()
     
+    def __func(self,num):
+            if num < 10:
+                return '0' + str(num)
+            else :
+                return str(num)
+    
+    def set_char(self,char_set = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 'abcdefghijklmnopqrstuvwxyz' + ' ,.?!' + '0123456789'):
+        
+        
+        self.char_set = char_set
+        indices = [self.__func(i) for i in range(len(self.char_set))]
+        self.char_to_index = {k:v for k,v in zip(self.char_set,indices)}
+        self.index_to_char = {k:v for v,k in self.char_to_index.items()}
+
+
+    def digitalize(self,m):
+        if not isinstance(m,str):
+            m = str(m)
+        ans = []
+        for item in m:
+            ans.append(self.char_to_index.get(item))
+        return ''.join(ans)
+    
+    def dedigitalize(self,c):
+        if not isinstance(c,str):
+            c = str(c)
+        ans = []
+        for i in range(0,len(c),2):
+            ans.append(self.index_to_char.get(c[i] + c[i+1]))
+        return ''.join(ans)
+        
     def lock(self,m):
-        # c = m ** self.e % self.n
+        if not isinstance(m,int):
+            m = int(m)
         c = m2m(m,self.e,self.n)
         return c
 
     def unlock(self,c):
+        if not isinstance(c,int):
+            c = int(c)
         m = m2m(c,self.d,self.n)
         return m
 

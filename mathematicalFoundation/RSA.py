@@ -38,7 +38,7 @@ def get_inverse(a:int,m:int):
     return ans
 
 # 快速幂算法
-def fastPower(base:int,power:int,m:int):
+def fast_power(base:int,power:int,m:int):
     ans = 1
     while power > 0:
         if power%2 == 1:
@@ -50,7 +50,7 @@ def fastPower(base:int,power:int,m:int):
 
 
 # 判断大整数是否为素数
-def is_largePrime(p:int):
+def is_large_prime(p:int):
     if p%2 == 0:
         return False
     
@@ -60,9 +60,9 @@ def is_largePrime(p:int):
         tmp = int(tmp//2)
     
     for a in (2,3,5,7,11,13,17,19):
-        m_0 =fastPower(a,tmp,p)
+        m_0 =fast_power(a,tmp,p)
         for i in range(k):
-            m_1 = fastPower(m_0,2,p)
+            m_1 = fast_power(m_0,2,p)
             if m_1 == 1 and m_0 == -1:
                 return False
             m_0 = m_1
@@ -70,7 +70,7 @@ def is_largePrime(p:int):
 
 # 大素数生成器
 # import random
-def largePrime(a:int,b:int):
+def large_prime(a:int,b:int):
     flag = True
     while(flag):
         flag = False
@@ -87,7 +87,7 @@ def largePrime(a:int,b:int):
             if p % item == 0:
                 flag = True
                 break
-        if not flag and is_largePrime(p):
+        if not flag and is_large_prime(p):
             return p
             
 
@@ -108,43 +108,48 @@ def solve_CRT(B:list,M:list):
     return (ans,m)
 
 
-# RSA加密系统
-def RSA_encode(plain:str):
-    p,q = largePrime(2**13,2**14-1),largePrime(2**13,2**14-1)
+# RSA密钥生成
+def RSA_initialize():
+    p,q = large_prime(2**13,2**14-1),large_prime(2**13,2**14-1)
+    p,q = large_prime(2**13,2**14-1),large_prime(2**13,2**14-1)
     n, phi = p*q, (p-1)*(q-1)
-    e = largePrime(max(p,q),phi) #pq较小时可能有问题
+    e = large_prime(max(p,q),phi) #pq较小时可能有问题
     K_e,K_d = gcd(n,e),get_inverse(e,phi)
-    
+    return (n,e,K_d)
+
+
+# RSA加密系统 n,e都是公钥 K_d是私钥
+def RSA_encode(message:str,n:int,e:int):
     group_bits = len(hex(n)[2:])
     cipher = ""
-    for i in range(len(plain)):
-        pl = ord(plain[i])
-        ci = fastPower(pl,e,n)
+    for i in range(len(message)):
+        m = ord(message[i])
+        ci = fast_power(m,e,n)
         cipher += hex(ci)[2:].zfill(group_bits)
-    return (cipher,n,e,K_d)
+    return (cipher)
 
     print(hex(n)[2:])#密文分组位数？
 
-    print(p,q)
-    print(n,phi,e)
-    print(K_e,K_d)
-    print("hello".encode('u'))
-    return 0
 
 #RSA解密系统
 def RSA_decode(cipher:str,n:int,K_d:int):
     group_bits = int(len(hex(n)[2:]))
     group_num = int(len(cipher)//group_bits)
 
-    plain = ""
+    message = ""
     for i in range(group_num):
         ci = int(cipher[i*group_bits:(i+1)*group_bits],16)
-        pl = fastPower(ci,K_d,n)
-        plain += chr(pl)
-    return plain
+        pl = fast_power(ci,K_d,n)
+        message += chr(pl)
+    return message
 
 
-s = RSA_encode("强大的国家带来繁荣的景象，巴拉巴拉吧小魔仙到处乱飞，明天要去理发")
-print(s[0])
-print(RSA_decode(s[0],s[1],s[3]))
+
+rsa = RSA_initialize()
+print(hex(rsa[0]),hex(rsa[1]),hex(rsa[2]))
+m = "强大的国家带来繁荣的景象，巴拉巴拉吧小魔仙到处乱飞，明天要去理发，刘宇牟真tm帅"
+c = RSA_encode(m,rsa[0],rsa[1])
+print(c)
+print(RSA_decode(c,rsa[0],rsa[2]))
+
 

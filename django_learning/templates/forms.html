@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method='POST' action='.'>
+    {% csrf_token %}
+    {{ context.as_p }}
+
+    <button type='submit'>Send data</button>
+</form>
+{% endblock content %}
+
+
+{% block pagetitle%}
+<h1>Write your message here!</h1>
+{% endblock pagetitle%}

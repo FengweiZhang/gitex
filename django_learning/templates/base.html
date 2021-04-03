@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    {% include 'navbar.html' with name='zerz'%}
+    {%block pagetitle%} {% endblock pagetitle%}
+    <head>
+        <title>
+            {% block title %}{% endblock title %}Django
+        </title>
+    </head>
+
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>

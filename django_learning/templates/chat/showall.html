@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+
+{% block title %} 
+All messages - {{ block.super }}
+{% endblock title %}
+
+
+{% block content %}
+    {% for obj in mess_list %}
+        <div>
+            <h2>{{obj.title}}</h2>
+            <p>{{obj.content}}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}

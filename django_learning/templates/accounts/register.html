@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+
+{%block pagetitle%}
+<h2>Register your account</h2>
+{%endblock pagetitle%}
+
+
+{% block content %}
+<form method="POST" action='.'>
+    {% csrf_token%}
+    {{ context.as_p }}
+    <button type='submit' >Register</button>
+</form>
+{% endblock content %}
